@@ -13,7 +13,7 @@
 	      	and name like '%${domainname}%'	      	
 	      </if>
 	    </where>
-	    order by id desc
+	    order by id
 	</select>
 	<select id="getDomainByName" resultType="map" parameterType="String">
 		SELECT * FROM knowledgegraphdomain WHERE status=1 and name =#{domainname}	 

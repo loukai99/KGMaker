@@ -278,6 +278,23 @@ public class KGManagerController extends BaseController {
 		HashMap<String, Object> graphNode = new HashMap<String, Object>();
 		try {
 			String domain = request.getParameter("domain");
+			if (!StringUtil.isBlank(domain)) {
+				List<Map<String, Object>> domainItem = kgservice.getDomainByName(domain);
+				if (domainItem.size() <= 0) {
+					String name = "tc";
+					Map<String, Object> maps = new HashMap<String, Object>();
+					maps.put("name", domain);
+					maps.put("nodecount", 1);
+					maps.put("shipcount", 0);
+					maps.put("status", 1);
+					maps.put("createuser", name);
+					kgservice.saveDomain(maps);
+				}
+			}else{
+				result.code = 300;
+				result.setMsg("领域已存在");
+				return result;
+			}
 			graphNode=KGGraphService.createnode(domain, entity);
 			if (graphNode!=null&&graphNode.size() > 0) {
 				result.code = 200;

@@ -86,6 +86,8 @@ public class Neo4jUtil {
 						String typeName = pair.value().type().name();
 						if (typeName.equals("NODE")) {
 							Node noe4jNode = pair.value().asNode();
+							Iterator<String> iterator = noe4jNode.labels().iterator();
+							String type=iterator.next();
 							String uuid = String.valueOf(noe4jNode.id());
 							Map<String, Object> map = noe4jNode.asMap();
 							for (Entry<String, Object> entry : map.entrySet()) {
@@ -93,6 +95,7 @@ public class Neo4jUtil {
 								rss.put(key, entry.getValue());
 							}
 							rss.put("uuid", uuid);
+							rss.put("type",type);
 							ents.add(rss);
 						}
 					}

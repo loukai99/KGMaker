@@ -847,24 +847,56 @@
         createSingleNode() {
             var _this = this;
             var data = {name:'',r:30};
-            data.domain = _this.domain;
-            $.ajax({
-                data: data,
-                type: "POST",
-                traditional: true,
-                url: contextRoot + "createnode",
-                success: function (result) {
-                    if (result.code == 200) {
-                        d3.select('.graphcontainer').style("cursor", "");
-                        var newnode = result.data;
-                        newnode.x = _this.txx;
-                        newnode.y = _this.tyy;
-                        newnode.fx = _this.txx;
-                        newnode.fy = _this.tyy;
-                        _this.graph.nodes.push(newnode);
-                        _this.updategraph();
+            // todo 加个弹框
+            // data.domain = _this.domain;
+            // $.ajax({
+            //     data: data,
+            //     type: "POST",
+            //     traditional: true,
+            //     url: contextRoot + "createnode",
+            //     success: function (result) {
+            //         if (result.code == 200) {
+            //             d3.select('.graphcontainer').style("cursor", "");
+            //             var newnode = result.data;
+            //             newnode.x = _this.txx;
+            //             newnode.y = _this.tyy;
+            //             newnode.fx = _this.txx;
+            //             newnode.fy = _this.tyy;
+            //             _this.graph.nodes.push(newnode);
+            //             _this.updategraph();
+            //         }
+            //     }
+            // });
+            var _this = this;
+            _this.$prompt('请输入节点类型', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputValue: this.selectlinkname
+            }).then(function (res) {
+                data.domain = res.value;
+                $.ajax({
+                    data: data,
+                    type: "POST",
+                    traditional: true,
+                    url: contextRoot + "createnode",
+                    success: function (result) {
+                        if (result.code == 200) {
+                            d3.select('.graphcontainer').style("cursor", "");
+                            var newnode = result.data;
+                            newnode.x = _this.txx;
+                            newnode.y = _this.tyy;
+                            newnode.fx = _this.txx;
+                            newnode.fy = _this.tyy;
+                            _this.graph.nodes.push(newnode);
+                            _this.updategraph();
+                        }
                     }
-                }
+                });
+            }).catch(function () {
+                _this.$message({
+                    type: 'info',
+                    message: '取消输入'
+                });
             });
         },
         addmaker() {
@@ -1283,19 +1315,25 @@
         },
         createlink(sourceId, targetId, ship) {
             var _this = this;
-            var data = {domain: _this.domain, sourceid: sourceId, targetid: targetId, ship: ''};
-            $.ajax({
-                data: data,
-                type: "POST",
-                url: contextRoot + "createlink",
-                success: function (result) {
-                    if (result.code == 200) {
-                        var newship = result.data;
-                        _this.graph.links.push(newship);
-                        _this.updategraph();
-                        _this.isaddlink = false;
+            _this.$prompt('请输入关系类型', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputValue: this.selectlinkname
+            }).then(function (res) {
+                var data = {domain: res.value, sourceid: sourceId, targetid: targetId, ship: ''};
+                $.ajax({
+                    data: data,
+                    type: "POST",
+                    url: contextRoot + "createlink",
+                    success: function (result) {
+                        if (result.code == 200) {
+                            var newship = result.data;
+                            _this.graph.links.push(newship);
+                            _this.updategraph();
+                            _this.isaddlink = false;
+                        }
                     }
-                }
+                });
             });
         },
         updatelinkName() {
@@ -1341,7 +1379,7 @@
                 inputValue: d.name
             }).then(function (res) {
                 value=res.value;
-                var data = {domain: _this.domain, nodeid: d.uuid, nodename: value};
+                var data = {domain: d.type, nodeid: d.uuid, nodename: value};
                 $.ajax({
                     data: data,
                     type: "POST",
@@ -1698,6 +1736,7 @@ $(function () {
             d3.select('.graphcontainer').style("cursor", "");
             app.txx=event.offsetX;
             app.tyy=event.offsetY;
+            console.log("添加走这")
             app.createSingleNode();
         }
         event.preventDefault();

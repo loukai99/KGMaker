@@ -12,16 +12,22 @@ spring:
 #      url: bolt://localhost:7687
 #      username: neo4j
 #      password: neo4j
-      url: bolt://42.193.123.190:7687
+#      url: bolt://42.193.123.190:7687
+#      username: neo4j
+#      password: 19991010sr
+      url: bolt://101.43.143.249:7687
       username: neo4j
-      password: 19991010sr
+      password: 123456
   datasource:
 #      url: jdbc:mysql://localhost:3306/kg?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      url: jdbc:mysql://42.193.123.190:3306/kg?useSSL=false&serverTimezone=UTC
+#      url: jdbc:mysql://42.193.123.190:3306/kg?useSSL=false&serverTimezone=UTC
+#      driverClassName: com.mysql.cj.jdbc.Driver
+#      username: root
+#      password: hjkl;'
+      url: jdbc:mysql://101.43.143.249:3306/kg?useSSL=false&serverTimezone=UTC
       driverClassName: com.mysql.cj.jdbc.Driver
       username: root
-      password: hjkl;'
-#      password: 123456
+      password: root
       type: com.zaxxer.hikari.HikariDataSource
 mybatis:
   typeAliasesPackage: com.warmer.kgmaker.entity
