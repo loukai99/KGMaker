@@ -94,7 +94,7 @@ public class Neo4jUtil {
                                 String key = entry.getKey();
                                 rss.put(key, entry.getValue());
                             }
-                            rss.computeIfAbsent("uuid", arg -> uuid);
+                            rss.put("uuid", uuid);
                             rss.put("type", type);
                             ents.add(rss);
                         }
@@ -133,6 +133,7 @@ public class Neo4jUtil {
                             rss.put("uuid", uuid);
                             rss.put("sourceid", sourceid);
                             rss.put("targetid", targetid);
+                            rss.put("name", rship.type());
                             ents.add(rss);
                         }
                     }
@@ -236,6 +237,8 @@ public class Neo4jUtil {
                             continue;
                         } else if (typeName.equals("NODE")) {
                             Node noe4jNode = pair.value().asNode();
+                            Iterator<String> iterator = noe4jNode.labels().iterator();
+                            String type = iterator.next();
                             Map<String, Object> map = noe4jNode.asMap();
                             String uuid = String.valueOf(noe4jNode.id());
                             if (!uuids.contains(uuid)) {
@@ -244,6 +247,7 @@ public class Neo4jUtil {
                                     rss.put(key, entry.getValue());
                                 }
                                 rss.put("uuid", uuid);
+                                rss.put("type",type);
                                 uuids.add(uuid);
                             }
                             if (rss != null && !rss.isEmpty()) {
@@ -263,6 +267,7 @@ public class Neo4jUtil {
                                 rships.put("uuid", uuid);
                                 rships.put("sourceid", sourceid);
                                 rships.put("targetid", targetid);
+                                rships.put("name", rship.type());
                                 shipids.add(uuid);
                                 if (rships != null && !rships.isEmpty()) {
                                     ships.add(rships);

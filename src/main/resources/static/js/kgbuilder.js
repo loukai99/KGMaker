@@ -313,7 +313,7 @@
 
             }
             if(tab.name == 'properties'){
-                this.getProperties(this.graphEntity.uuid)
+                this.getProperties(this.graphEntity.type,this.graphEntity.uuid)
             }
         },
         operatenameformat() {
@@ -393,9 +393,9 @@
             this.isdeletelink = true;
             d3.select('.link').attr("class", "link linkdelete"); // 修改鼠标样式为"+"
         },
-        getmorenode() {
+        getmorenode(d) {
             var _this = this;
-            var data = {domain: _this.domain, nodeid: _this.selectnodeid};
+            var data = {domain: d.type, nodeid: _this.selectnodeid};
             $.ajax({
                 data: data,
                 type: "POST",
@@ -774,7 +774,7 @@
                             _this.tyy=d.y;
                             break;
                         case "MORE":
-                            _this.getmorenode();
+                            _this.getmorenode(d);
                             break;
                         case "CHILD":
                             _this.operatetype = 2;
@@ -973,26 +973,26 @@
             d.fy = d3.event.y;
         },
         dragended(d) {
-            if (!d3.event.active) this.simulation.alphaTarget(0);
-            d.fx = d3.event.x;
-            d.fy = d3.event.y;
-            var domain = this.domain;
-            var uuid = d.uuid;
-            var fx = d.fx;
-            var fy = d.fy;
-            var ajaxdata = {domain:domain,uuid:uuid,fx:fx,fy:fy};
-            $.ajax({
-                data: ajaxdata,
-                type: "POST",
-                url: contextRoot+"updateCorrdOfNode",
-                success: function (result) {
-                    if (result.code == 200) {
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert(errorThrown)
-                }
-            });
+            // if (!d3.event.active) this.simulation.alphaTarget(0);
+            // d.fx = d3.event.x;
+            // d.fy = d3.event.y;
+            // var domain = this.domain;
+            // var uuid = d.uuid;
+            // var fx = d.fx;
+            // var fy = d.fy;
+            // var ajaxdata = {domain:domain,uuid:uuid,fx:fx,fy:fy};
+            // $.ajax({
+            //     data: ajaxdata,
+            //     type: "POST",
+            //     url: contextRoot+"updateCorrdOfNode",
+            //     success: function (result) {
+            //         if (result.code == 200) {
+            //         }
+            //     },
+            //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+            //         alert(errorThrown)
+            //     }
+            // });
         },
         drawnode(node) {
             var _this = this;
@@ -1629,9 +1629,9 @@
                 }
             });
         },
-        getProperties(id){
+        getProperties(type,id){
     	    var _this = this;
-    	    var data = {label: _this.domain, id:id}
+    	    var data = {label: type, id:id}
     	    $.ajax({
                 data: data,
                 type: "GET",
