@@ -37,23 +37,4 @@ pagehelper:
     helperDialect: mysql
     reasonable: true
     supportMethodsArguments: true
-    params: count=countSql 
-#--------七牛云配置
-qiniu:
-  access:
-    key: 2J5BOKpbxDlzkYVYZ5dwGS3jAevVmOJwcL3fIdpw
-  secret:
-    key: 2LXAQbFFbFR_I76bseNEmu-Sjnh4RRaSRsazX5Dj
-  bucket:
-    name: nndt
-    host:
-      name: file.miaoleyan.com
-  prefixName: /nndt
-#--------七牛云配置
-img:  #//如果是Windows情况下，格式是 D:\\blog\\image\\   linx 格式"/home/blog/image/";
-   location : D:\\kgmanager\\image\\
-#  location: /home/tan/kg/image/
-file:
-  serverurl:  http://localhost:7089
-#  location: /home/tan/kg/csv/
-  location : D:\\kgmanager\\csv\\   #如果是Windows情况下，格式是 D:\\kgmanager\\csv\\   linx 格式"/home/kgmanager/csv/";
+    params: count=countSql

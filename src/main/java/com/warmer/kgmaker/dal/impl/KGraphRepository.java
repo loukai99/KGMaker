@@ -265,6 +265,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param nodeid
      * @return
      */
+    @Override
     public HashMap<String, Object> getmorerelationnode(String domain, String nodeid) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         try {
@@ -285,6 +286,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param nodename
      * @return 修改后的节点
      */
+    @Override
     public HashMap<String, Object> updatenodename(String domain, String nodeid, String nodename) {
         HashMap<String, Object> result = new HashMap<String, Object>();
         List<HashMap<String, Object>> graphNodeList = new ArrayList<HashMap<String, Object>>();
@@ -347,6 +349,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param targetnames 目标节点数组
      * @return
      */
+    @Override
     public HashMap<String, Object> batchcreatenode(String domain, String sourcename, String relation,
                                                    String[] targetnames) {
         HashMap<String, Object> rss = new HashMap<String, Object>();
@@ -395,6 +398,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param relation    关系
      * @return
      */
+    @Override
     public HashMap<String, Object> batchcreatechildnode(String domain, String sourceid, Integer entitytype,
                                                         String[] targetnames, String relation) {
         HashMap<String, Object> rss = new HashMap<String, Object>();
@@ -440,6 +444,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param sourcenames 节点名称
      * @return
      */
+    @Override
     public List<HashMap<String, Object>> batchcreatesamenode(String domain, Integer entitytype, String[] sourcenames) {
         List<HashMap<String, Object>> rss = new ArrayList<HashMap<String, Object>>();
         try {
@@ -466,6 +471,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param ship     关系
      * @return
      */
+    @Override
     public HashMap<String, Object> createlink(String domain, long sourceid, long targetid, String ship) {
         HashMap<String, Object> rss = new HashMap<String, Object>();
         try {
@@ -493,6 +499,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param shipname 关系名称
      * @return
      */
+    @Override
     public HashMap<String, Object> updatelink(String domain, long shipid, String shipname) {
         HashMap<String, Object> rss = new HashMap<String, Object>();
         try {
@@ -515,6 +522,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param nodeid
      * @return
      */
+    @Override
     public List<HashMap<String, Object>> deletenode(String domain, long nodeid) {
         List<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
         try {
@@ -539,6 +547,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param domain
      * @param shipid
      */
+    @Override
     public void deletelink(String domain, long shipid) {
         try {
             String cypherSql = String.format("MATCH (n:`%s`) -[r]->(m) where id(r)=%s delete r", domain, shipid);
@@ -559,6 +568,7 @@ public class KGraphRepository implements IKGraphRepository {
      *                    [[startname;ship;endname],[startname1;ship1;endname1],[startname2;ship2;endname2]]
      * @return node relationship
      */
+    @Override
     public HashMap<String, Object> createGraphByText(String domain, Integer entitytype, Integer operatetype,
                                                      Integer sourceid, String[] rss) {
         HashMap<String, Object> rsList = new HashMap<String, Object>();
@@ -615,6 +625,7 @@ public class KGraphRepository implements IKGraphRepository {
         return rsList;
     }
     
+    @Override
     public void batchcreateGraph(String domain, List<Map<String, Object>> params) {
         try {
             if (params != null && params.size() > 0) {
@@ -641,6 +652,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @param csvUrl
      * @param status
      */
+    @Override
     public void batchInsertByCSV(String domain, String csvUrl, int status) {
         String loadNodeCypher1 = null;
         String loadNodeCypher2 = null;
