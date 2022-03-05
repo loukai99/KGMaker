@@ -31,11 +31,7 @@ public class KGGraphService implements IKGGraphService {
     public StatementResult saveProperties(String label, String id, Map<String, Object> properties) {
         return kgRepository.saveProperties(label, id, properties);
     }
-
-    @Override
-	public GraphPageRecord<HashMap<String, Object>> getPageDomain(GraphQuery queryItem) {
-		return kgRepository.getPageDomain(queryItem);
-	}
+    
     @Override
     public void deleteKGdomain(String domain) {
         kgRepository.deleteKGdomain(domain);
@@ -45,12 +41,7 @@ public class KGGraphService implements IKGGraphService {
     public HashMap<String, Object> getdomaingraph(GraphQuery query) {
         return kgRepository.getdomaingraph(query);
     }
-
-    @Override
-    public HashMap<String, Object> getdomainnodes(String domain, Integer pageIndex, Integer pageSize) {
-        return kgRepository.getdomainnodes(domain, pageIndex, pageSize);
-    }
-
+    
     @Override
     public long getrelationnodecount(String domain, long nodeid) {
         return kgRepository.getrelationnodecount(domain, nodeid);
@@ -113,36 +104,14 @@ public class KGGraphService implements IKGGraphService {
         kgRepository.deletelink(domain, shipid);
     }
 
-    @Override
-    public HashMap<String, Object> createGraphByText(String domain, Integer entitytype, Integer operatetype,
-                                                     Integer sourceid, String[] rss) {
-        return kgRepository.createGraphByText(domain, entitytype, operatetype, sourceid, rss);
-    }
-
-    @Override
-    public void batchcreateGraph(String domain, List<Map<String, Object>> params) {
-        kgRepository.batchcreateGraph(domain, params);
-    }
-
-    @Override
-    public void updateNodeFileStatus(String domain, long nodeId, int status) {
-        kgRepository.updateNodeFileStatus(domain,nodeId,status);
-    }
+    
 
     @Override
     public void updateCorrdOfNode(String domain, String uuid, Double fx, Double fy) {
         kgRepository.updateCorrdOfNode(domain,uuid,fx,fy);
     }
 
-    @Override
-	public void batchInsertByCSV(String domain, String csvUrl, int status) {
-		kgRepository.batchInsertByCSV(domain, csvUrl, status);
-	}
 
-    @Override
-    public void batchSetPropertyByCSV(String domain, String csvUrl, int status) {
-        kgRepository.batchSetPropertyByCSV(domain, csvUrl, status);
-    }
 
 
 }

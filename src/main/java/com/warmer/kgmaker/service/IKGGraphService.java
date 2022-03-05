@@ -14,12 +14,6 @@ public interface IKGGraphService {
 	Map<String, Object> getProperties(String label, String id);
 	StatementResult saveProperties(String label, String id, Map<String, Object> properties);
 	/**
-	 * 领域标签分页
-	 * @param queryItem
-	 * @return
-	 */
-	GraphPageRecord<HashMap<String, Object>> getPageDomain(GraphQuery queryItem);
-	/**
 	 * 删除Neo4j 标签
 	 * 
 	 * @param domain
@@ -33,17 +27,7 @@ public interface IKGGraphService {
 	 * @return node relationship
 	 */
 	HashMap<String, Object> getdomaingraph(GraphQuery query);
-
-	/**
-	 * 获取节点列表
-	 * 
-	 * @param domain
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
-	 */
-	HashMap<String, Object> getdomainnodes(String domain, Integer pageIndex, Integer pageSize);
-
+	
 	/**
 	 * 获取某个领域指定节点拥有的上下级的节点数
 	 * 
@@ -179,44 +163,6 @@ public interface IKGGraphService {
 	 */
 	void deletelink(String domain, long shipid);
 
-	/**
-	 * 段落识别出的三元组生成图谱
-	 * 
-	 * @param domain
-	 * @param entitytype
-	 * @param operatetype
-	 * @param sourceid
-	 * @param rss
-	 *            关系三元组
-	 *            [[startname;ship;endname],[startname1;ship1;endname1],[startname2;ship2;endname2]]
-	 * @return node relationship
-	 */
-	HashMap<String, Object> createGraphByText(String domain, Integer entitytype, Integer operatetype, Integer sourceid,
-			String[] rss);
-	/**
-	 * 批量创建节点，关系
-	 * @param domain
-	 * @param params 三元组 sourcenode,relationship,targetnode
-	 */
-	void batchcreateGraph(String domain, List<Map<String,Object>> params);
-	/**
-	 * 导入csv
-	 * @param domain
-	 * @param csvUrl
-	 * @param status
-	 */
-	void batchInsertByCSV(String domain, String csvUrl, int status) ;
 
-	/**
-	 * 通过 csv 批量添加属性
-	 */
-	void batchSetPropertyByCSV(String domain, String csvUrl, int status);
-	/**
-	 * 更新节点有无附件
-	 * @param domain
-	 * @param nodeId
-	 * @param status
-	 */
-	void updateNodeFileStatus(String domain,long nodeId, int status);
 	void updateCorrdOfNode(String domain, String uuid, Double fx, Double fy);
 }

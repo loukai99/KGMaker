@@ -21,39 +21,7 @@ public class KGraphRepository implements IKGraphRepository {
     @Autowired
     private Neo4jUtil neo4jUtil;
     
-    /**
-     * 领域标签分页
-     *
-     * @param queryItem
-     * @return
-     */
-    @Override
-    public GraphPageRecord<HashMap<String, Object>> getPageDomain(GraphQuery queryItem) {
-        GraphPageRecord<HashMap<String, Object>> resultRecord = new GraphPageRecord<HashMap<String, Object>>();
-        try {
-            String totalCountquery = "MATCH (n) RETURN count(distinct labels(n)) as count";
-            int totalCount = 0;
-            totalCount = neo4jUtil.executeScalar(totalCountquery);
-            if (totalCount > 0) {
-                int skipCount = (queryItem.getPageIndex() - 1) * queryItem.getPageSize();
-                int limitCount = queryItem.getPageSize();
-                String domainSql = String.format(
-                        "START n=node(*)  RETURN distinct labels(n) as domain,count(n) as nodecount order by nodecount desc SKIP %s LIMIT %s",
-                        skipCount, limitCount);
-                List<HashMap<String, Object>> pageList = neo4jUtil.GetEntityList(domainSql);
-                resultRecord.setPageIndex(queryItem.getPageIndex());
-                resultRecord.setPageSize(queryItem.getPageSize());
-                resultRecord.setTotalCount(totalCount);
-                resultRecord.setNodeList(pageList);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return resultRecord;
-    }
-    
+ 
     /**
      * 删除Neo4j 标签
      *
@@ -166,60 +134,7 @@ public class KGraphRepository implements IKGraphRepository {
         return nr;
     }
     
-    /**
-     * 获取节点列表
-     *
-     * @param domain
-     * @param pageIndex
-     * @param pageSize
-     * @return
-     */
-    @Override
-    public HashMap<String, Object> getdomainnodes(String domain, Integer pageIndex, Integer pageSize) {
-        HashMap<String, Object> resultItem = new HashMap<String, Object>();
-        List<HashMap<String, Object>> ents = new ArrayList<HashMap<String, Object>>();
-        List<HashMap<String, Object>> concepts = new ArrayList<HashMap<String, Object>>();
-        List<HashMap<String, Object>> props = new ArrayList<HashMap<String, Object>>();
-        List<HashMap<String, Object>> methods = new ArrayList<HashMap<String, Object>>();
-        List<HashMap<String, Object>> entitys = new ArrayList<HashMap<String, Object>>();
-        try {
-            int skipCount = (pageIndex - 1) * pageSize;
-            int limitCount = pageSize;
-            String domainSql = String.format("START n=node(*) MATCH (n:`%s`) RETURN n SKIP %s LIMIT %s", domain,
-                    skipCount, limitCount);
-            if (!StringUtil.isBlank(domain)) {
-                ents = neo4jUtil.GetGraphNode(domainSql);
-                for (HashMap<String, Object> hashMap : ents) {
-                    Object et = hashMap.get("entitytype");
-                    if (et != null) {
-                        String typeStr = et.toString();
-                        if (StringUtil.isNotBlank(typeStr)) {
-                            int type = Integer.parseInt(et.toString());
-                            if (type == 0) {
-                                concepts.add(hashMap);
-                            } else if (type == 1) {
-                                entitys.add(hashMap);
-                            } else if (type == 2 || type == 3) {
-                                props.add(hashMap);// 属性和方法放在一起展示
-                            } else {
-                                // methods.add(hashMap);
-                            }
-                        }
-                    }
-                }
-                resultItem.put("concepts", concepts);
-                resultItem.put("props", props);
-                resultItem.put("methods", methods);
-                resultItem.put("entitys", entitys);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return resultItem;
-    }
-    
+
     /**
      * 获取某个领域指定节点拥有的上下级的节点数
      *
@@ -557,136 +472,6 @@ public class KGraphRepository implements IKGraphRepository {
         }
     }
     
-    /**
-     * 段落识别出的三元组生成图谱
-     *
-     * @param domain
-     * @param entitytype
-     * @param operatetype
-     * @param sourceid
-     * @param rss         关系三元组
-     *                    [[startname;ship;endname],[startname1;ship1;endname1],[startname2;ship2;endname2]]
-     * @return node relationship
-     */
-    @Override
-    public HashMap<String, Object> createGraphByText(String domain, Integer entitytype, Integer operatetype,
-                                                     Integer sourceid, String[] rss) {
-        HashMap<String, Object> rsList = new HashMap<String, Object>();
-        try {
-            List<Object> nodeIds = new ArrayList<Object>();
-            List<HashMap<String, Object>> nodeList = new ArrayList<HashMap<String, Object>>();
-            List<HashMap<String, Object>> shipList = new ArrayList<HashMap<String, Object>>();
-            
-            if (rss != null && rss.length > 0) {
-                for (String item : rss) {
-                    String[] ns = item.split(";");
-                    String nodestart = ns[0];
-                    String ship = ns[1];
-                    String nodeend = ns[2];
-                    String nodestartSql = String.format("MERGE (n:`%s`{name:'%s',entitytype:'%s'})  return n", domain,
-                            nodestart, entitytype);
-                    String nodeendSql = String.format("MERGE (n:`%s`{name:'%s',entitytype:'%s'})  return n", domain,
-                            nodeend, entitytype);
-                    // 创建初始节点
-                    List<HashMap<String, Object>> startNode = neo4jUtil.GetGraphNode(nodestartSql);
-                    // 创建结束节点
-                    List<HashMap<String, Object>> endNode = neo4jUtil.GetGraphNode(nodeendSql);
-                    Object startId = startNode.get(0).get("uuid");
-                    if (!nodeIds.contains(startId)) {
-                        nodeIds.add(startId);
-                        nodeList.addAll(startNode);
-                    }
-                    Object endId = endNode.get(0).get("uuid");
-                    if (!nodeIds.contains(endId)) {
-                        nodeIds.add(endId);
-                        nodeList.addAll(endNode);
-                    }
-                    if (sourceid != null && sourceid > 0 && operatetype == 2) {// 添加下级
-                        String shipSql = String.format(
-                                "MATCH (n:`%s`),(m:`%s`) WHERE id(n)=%s AND id(m) = %s "
-                                        + "CREATE (n)-[r:RE{name:'%s'}]->(m)" + "RETURN r",
-                                domain, domain, sourceid, startId, "");
-                        List<HashMap<String, Object>> shipResult = neo4jUtil.GetGraphRelationShip(shipSql);
-                        shipList.add(shipResult.get(0));
-                    }
-                    String shipSql = String.format("MATCH (n:`%s`),(m:`%s`) WHERE id(n)=%s AND id(m) = %s "
-                            + "CREATE (n)-[r:RE{name:'%s'}]->(m)" + "RETURN r", domain, domain, startId, endId, ship);
-                    List<HashMap<String, Object>> shipResult = neo4jUtil.GetGraphRelationShip(shipSql);
-                    shipList.addAll(shipResult);
-                    
-                }
-                rsList.put("node", nodeList);
-                rsList.put("relationship", shipList);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rsList;
-    }
-    
-    @Override
-    public void batchcreateGraph(String domain, List<Map<String, Object>> params) {
-        try {
-            if (params != null && params.size() > 0) {
-                String nodeStr = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(params));
-                String nodeCypher = String
-                        .format("UNWIND %s as row " + " MERGE (n:`%s` {name:row.SourceNode,source:row.Source})"
-                                + " MERGE (m:`%s` {name:row.TargetNode,source:row.Source})", nodeStr, domain, domain);
-                neo4jUtil.excuteCypherSql(nodeCypher);
-                String relationShipCypher = String.format("UNWIND %s as row " + " MATCH (n:`%s` {name:row.SourceNode})"
-                                + " MATCH (m:`%s` {name:row.TargetNode})" + " MERGE (n)-[:RE{name:row.RelationShip}]->(m)",
-                        nodeStr, domain, domain);
-                neo4jUtil.excuteCypherSql(relationShipCypher);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * 批量导入csv
-     *
-     * @param domain
-     * @param csvUrl
-     * @param status
-     */
-    @Override
-    public void batchInsertByCSV(String domain, String csvUrl, int status) {
-        String loadNodeCypher1 = null;
-        String loadNodeCypher2 = null;
-        String addIndexCypher = null;
-        addIndexCypher = " CREATE INDEX ON :" + domain + "(name);";
-        loadNodeCypher1 = " USING PERIODIC COMMIT 500 LOAD CSV FROM '" + csvUrl + "' AS line " + " MERGE (:`" + domain
-                + "` {name:line[0]});";
-        loadNodeCypher2 = " USING PERIODIC COMMIT 500 LOAD CSV FROM '" + csvUrl + "' AS line " + " MERGE (:`" + domain
-                + "` {name:line[1]});";
-        // 拼接生产关系导入cypher
-        String loadRelCypher = null;
-        String type = "RE";
-        loadRelCypher = " USING PERIODIC COMMIT 500 LOAD CSV FROM  '" + csvUrl + "' AS line " + " MATCH (m:`" + domain
-                + "`),(n:`" + domain + "`) WHERE m.name=line[0] AND n.name=line[1] " + " MERGE (m)-[r:" + type + "]->(n) "
-                + "	SET r.name=line[2];";
-        neo4jUtil.excuteCypherSql(addIndexCypher);
-        neo4jUtil.excuteCypherSql(loadNodeCypher1);
-        neo4jUtil.excuteCypherSql(loadNodeCypher2);
-        neo4jUtil.excuteCypherSql(loadRelCypher);
-        
-        
-    }
-    
-    @Override
-    public void updateNodeFileStatus(String domain, long nodeId, int status) {
-        try {
-            String nodeCypher = String.format("match (n:`%s`) where id(n)=%s set n.hasfile=%s ", domain, nodeId, status);
-            neo4jUtil.excuteCypherSql(nodeCypher);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
     @Override
     public void updateCorrdOfNode(String domain, String uuid, Double fx, Double fy) {
         String cypher = null;
@@ -704,11 +489,7 @@ public class KGraphRepository implements IKGraphRepository {
         }
         neo4jUtil.excuteCypherSql(cypher);
     }
-    
-    @Override
-    public List<String> getPropertiesNameByLabel(String label) {
-        return null;
-    }
+
     
     @Override
     public Map<String, Object> getProperties(String label, String id) {
@@ -738,13 +519,5 @@ public class KGraphRepository implements IKGraphRepository {
         return neo4jUtil.excuteCypherSql(cypher.toString());
     }
     
-    @Override
-    public void batchSetPropertyByCSV(String domain, String csvUrl, int status) {
-        String addIndexCypher = "CREATE INDEX ON :" + domain + "(name)";
-        String addPropertyCypher = "USING PERIODIC COMMIT 500 LOAD CSV FROM '" + csvUrl + "' AS line" +
-                " MATCH (n:`" + domain + "`) WHERE n.name=line[0] SET n+={linfe[1]:line[2]}";
-        
-        neo4jUtil.excuteCypherSql(addIndexCypher);
-        neo4jUtil.excuteCypherSql(addPropertyCypher);
-    }
+
 }

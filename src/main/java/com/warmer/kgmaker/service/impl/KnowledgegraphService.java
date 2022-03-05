@@ -51,34 +51,5 @@ public class KnowledgegraphService implements IKnowledgegraphService {
 		return knowledgegraphRepository.getDomainById(domainid);
 	}
 	
-	@Override
-	public void saveNodeImage(List<Map<String, Object>> mapList) {
-		knowledgegraphRepository.saveNodeImage(mapList);
-	}
-
-    @Override
-    public void saveNodeContent(Map<String, Object> map) {
-        knowledgegraphRepository.saveNodeContent(map);
-    }
-
-    @Override
-    public void updateNodeContent(Map<String, Object> map) {
-        knowledgegraphRepository.updateNodeContent(map);
-    }
-
-    @Override
-	public List<Map<String, Object>> getNodeImageList(Integer domainid, Integer nodeid) {
-		return knowledgegraphRepository.getNodeImageList(domainid,nodeid);
-	}
-
-    @Override
-    public List<Map<String, Object>> getNodeContent(Integer domainid, Integer nodeid) {
-        return knowledgegraphRepository.getNodeContent(domainid,nodeid);
-    }
-
-    @Override
-    public void deleteNodeImage(Integer domainid, Integer nodeid) {
-         knowledgegraphRepository.deleteNodeImage(domainid,nodeid);
-    }
 
 }
