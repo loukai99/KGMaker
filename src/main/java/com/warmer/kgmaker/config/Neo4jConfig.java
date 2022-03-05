@@ -1,4 +1,4 @@
-package com.warmer.kgmaker.util;
+package com.warmer.kgmaker.config;
 
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
