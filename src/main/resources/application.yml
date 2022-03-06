@@ -5,9 +5,6 @@ spring:
     multipart:
       max-file-size: 100Mb
       maxRequestSize: 1000Mb
-  thymeleaf:
-    cache : false
-    mode: HTML5
   neo4j:
 #      url: bolt://localhost:7687
 #      username: neo4j
