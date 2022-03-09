@@ -37,15 +37,7 @@ public class KGManagerController extends BaseController {
     @Autowired
     private Driver neo4jDriver;
     
-    @GetMapping("/")
-    public String home(Model model) {
-        return "kg/home";
-    }
-    
-    @GetMapping("/kg/index")
-    public String index(Model model) {
-        return "kg/index";
-    }
+
     
     @ResponseBody
     @PostMapping("/saveProperties")
