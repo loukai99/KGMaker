@@ -13,7 +13,7 @@ public interface IKnowledgegraphRepository {
 	void saveDomain(@Param("params") Map<String, Object> map);
 	void updateDomain(@Param("params") Map<String, Object> map);
 	void deleteDomain(@Param("id") Integer id);
-	List<Map<String,Object>> getDomainByName(@Param("domainname") String domainname);
+	List<Map<String,Object>> getDomainByName(@Param("domainname") String domainname,@Param("fileID")String fileID);
 	List<Map<String,Object>> getDomainById(@Param("domainid")Integer domainid);
 
 	}

@@ -10,6 +10,6 @@ public interface IKnowledgegraphService {
 	void saveDomain(Map<String, Object> map);
 	void updateDomain(Map<String, Object> map);
 	void deleteDomain(Integer id);
-	List<Map<String,Object>> getDomainByName(String domainname);
+	List<Map<String,Object>> getDomainByName(String domainname,String fileID);
 	List<Map<String,Object>> getDomainById(Integer domainid);
 }

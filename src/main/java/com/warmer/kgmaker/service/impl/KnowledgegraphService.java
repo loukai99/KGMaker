@@ -37,8 +37,8 @@ public class KnowledgegraphService implements IKnowledgegraphService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getDomainByName(String domainname) {
-		return knowledgegraphRepository.getDomainByName(domainname);
+	public List<Map<String, Object>> getDomainByName(String domainname,String fileID) {
+		return knowledgegraphRepository.getDomainByName(domainname,fileID);
 	}
 
 	@Override

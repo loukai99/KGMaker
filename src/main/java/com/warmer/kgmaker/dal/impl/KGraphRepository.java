@@ -1,6 +1,7 @@
 package com.warmer.kgmaker.dal.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import com.warmer.kgmaker.dal.IKGraphRepository;
 import com.warmer.kgmaker.entity.QAEntityItem;
 import com.warmer.kgmaker.query.GraphQuery;
@@ -75,7 +76,7 @@ public class KGraphRepository implements IKGraphRepository {
                             cqWhere = String.format("where n.name contains('%s')", query.getNodename());
                         }
                     }
-                    String nodeOnly = cqWhere;
+
                     if (!StringUtil.isBlank(cqr)) {
                         if (StringUtil.isBlank(cqWhere)) {
                             cqWhere = String.format(" where ( %s )", cqr);
@@ -86,7 +87,7 @@ public class KGraphRepository implements IKGraphRepository {
                         
                     }
                     if (!StringUtil.isBlank(query.getFileID())) {
-                        String s = String.format("n.fileId = '%s'", query.getFileID());
+                        String s = String.format("n.fileID = %s", query.getFileID());
                         if (StringUtil.isBlank(cqWhere)) {
                             cqWhere = String.format(" where ( %s )", s);
                             
@@ -94,6 +95,7 @@ public class KGraphRepository implements IKGraphRepository {
                             cqWhere += String.format(" and ( %s )", s);
                         }
                     }
+                    String nodeOnly = cqWhere;
                     // 下边的查询查不到单个没有关系的节点,考虑要不要左箭头
                     String nodeSql = String.format("MATCH (n:`%s`) <-[r]->(m) %s return * limit %s", domain, cqWhere,
                             query.getPageSize());
@@ -187,7 +189,7 @@ public class KGraphRepository implements IKGraphRepository {
     public void createdomain(String domain, String fileID) {
         try {
             String cypherSql = String.format(
-                    "create (n:`%s`{entitytype:0,name:'',fileID:'%s'}) return id(n)", domain,fileID);
+                    "create (n:`%s`{entitytype:0,name:'',fileID:%s}) return id(n)", domain,fileID);
             neo4jUtil.excuteCypherSql(cypherSql);
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,10 +262,10 @@ public class KGraphRepository implements IKGraphRepository {
                         entity.getUuid(), sqlkeyval);
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             } else {
-                // todo 颜色
-                entity.setColor("#ff4500");// 默认颜色
                 entity.setR(30);// 默认半径
-                String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity));
+                SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
+                filter.getExcludes().add("uuid");
+                String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity,filter));
                 String cypherSql = String.format("create (n:`%s` %s) return n", domain, propertiesString);
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             }

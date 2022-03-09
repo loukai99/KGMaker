@@ -1,5 +1,7 @@
 package com.warmer.kgmaker.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
@@ -8,8 +10,6 @@ public class QAEntityItem  implements Serializable{
 	private String name;//显示名称
 	private String color;//对应关系数据库字段
 	private Integer r;
-	/*private String x;
-	private String y;*/
 	private String fileID;
 	public long getUuid() {
 		return uuid;
@@ -35,18 +35,6 @@ public class QAEntityItem  implements Serializable{
 	public void setR(Integer r) {
 		this.r = r;
 	}
-	/*public String getX() {
-		return x;
-	}
-	public void setX(String x) {
-		this.x = x;
-	}
-	public String getY() {
-		return y;
-	}
-	public void setY(String y) {
-		this.y = y;
-	}*/
 	
 	public String getFileID() {
 		return fileID;
