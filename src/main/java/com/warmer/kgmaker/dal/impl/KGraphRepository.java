@@ -21,7 +21,7 @@ public class KGraphRepository implements IKGraphRepository {
     @Autowired
     private Neo4jUtil neo4jUtil;
     
- 
+    
     /**
      * 删除Neo4j 标签
      *
@@ -48,6 +48,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @return node relationship
      */
     @Override
+    // todo fileId
     public HashMap<String, Object> getdomaingraph(GraphQuery query) {
         HashMap<String, Object> nr = new HashMap<String, Object>();
         try {
@@ -64,7 +65,7 @@ public class KGraphRepository implements IKGraphRepository {
                     cqr = String.join(" or ", lis);
                 }
                 String cqWhere = "";
-                if (!StringUtil.isBlank(query.getNodename()) || !StringUtil.isBlank(cqr)) {
+                if (!StringUtil.isBlank(query.getNodename()) || !StringUtil.isBlank(cqr) || !StringUtil.isBlank(query.getFileID())) {
                     
                     if (!StringUtil.isBlank(query.getNodename())) {
                         if (query.getMatchtype() == 1) {
@@ -83,6 +84,15 @@ public class KGraphRepository implements IKGraphRepository {
                             cqWhere += String.format(" and ( %s )", cqr);
                         }
                         
+                    }
+                    if (!StringUtil.isBlank(query.getFileID())) {
+                        String s = String.format("n.fileId = '%s'", query.getFileID());
+                        if (StringUtil.isBlank(cqWhere)) {
+                            cqWhere = String.format(" where ( %s )", s);
+                            
+                        } else {
+                            cqWhere += String.format(" and ( %s )", s);
+                        }
                     }
                     // 下边的查询查不到单个没有关系的节点,考虑要不要左箭头
                     String nodeSql = String.format("MATCH (n:`%s`) <-[r]->(m) %s return * limit %s", domain, cqWhere,
@@ -134,7 +144,7 @@ public class KGraphRepository implements IKGraphRepository {
         return nr;
     }
     
-
+    
     /**
      * 获取某个领域指定节点拥有的上下级的节点数
      *
@@ -167,6 +177,17 @@ public class KGraphRepository implements IKGraphRepository {
         try {
             String cypherSql = String.format(
                     "create (n:`%s`{entitytype:0,name:''}) return id(n)", domain);
+            neo4jUtil.excuteCypherSql(cypherSql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void createdomain(String domain, String fileID) {
+        try {
+            String cypherSql = String.format(
+                    "create (n:`%s`{entitytype:0,name:'',fileID:'%s'}) return id(n)", domain,fileID);
             neo4jUtil.excuteCypherSql(cypherSql);
         } catch (Exception e) {
             e.printStackTrace();
@@ -228,6 +249,7 @@ public class KGraphRepository implements IKGraphRepository {
      * @return
      */
     @Override
+    //todo fileId
     public HashMap<String, Object> createnode(String domain, QAEntityItem entity) {
         HashMap<String, Object> rss = new HashMap<String, Object>();
         List<HashMap<String, Object>> graphNodeList = new ArrayList<HashMap<String, Object>>();
@@ -238,6 +260,7 @@ public class KGraphRepository implements IKGraphRepository {
                         entity.getUuid(), sqlkeyval);
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             } else {
+                // todo 颜色
                 entity.setColor("#ff4500");// 默认颜色
                 entity.setR(30);// 默认半径
                 String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity));
@@ -489,7 +512,7 @@ public class KGraphRepository implements IKGraphRepository {
         }
         neo4jUtil.excuteCypherSql(cypher);
     }
-
+    
     
     @Override
     public Map<String, Object> getProperties(String label, String id) {
@@ -519,5 +542,5 @@ public class KGraphRepository implements IKGraphRepository {
         return neo4jUtil.excuteCypherSql(cypher.toString());
     }
     
-
+    
 }

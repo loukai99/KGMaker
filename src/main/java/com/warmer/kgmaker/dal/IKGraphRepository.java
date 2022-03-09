@@ -44,6 +44,7 @@ public interface IKGraphRepository {
 	 * @param domain
 	 */
 	void createdomain(String domain);
+	void createdomain(String domain,String fileID);
 
 	/**
 	 * 获取/展开更多节点,找到和该节点有关系的节点

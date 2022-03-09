@@ -9,7 +9,7 @@ import java.util.Map;
 @Mapper
 public interface IKnowledgegraphRepository {
 	List<Map<String,Object>> getDomains();
-	List<Map<String,Object>> getDomainList(@Param("domainname")String domainname,@Param("createuser")String createuser);
+	List<Map<String,Object>> getDomainList(@Param("domainname")String domainname,@Param("createuser")String createuser,@Param("fileID")String fileID);
 	void saveDomain(@Param("params") Map<String, Object> map);
 	void updateDomain(@Param("params") Map<String, Object> map);
 	void deleteDomain(@Param("id") Integer id);

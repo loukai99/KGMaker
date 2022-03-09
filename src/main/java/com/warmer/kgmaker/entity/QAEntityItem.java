@@ -10,6 +10,7 @@ public class QAEntityItem  implements Serializable{
 	private Integer r;
 	/*private String x;
 	private String y;*/
+	private String fileID;
 	public long getUuid() {
 		return uuid;
 	}
@@ -47,4 +48,11 @@ public class QAEntityItem  implements Serializable{
 		this.y = y;
 	}*/
 	
+	public String getFileID() {
+		return fileID;
+	}
+	
+	public void setFileID(String fileID) {
+		this.fileID = fileID;
+	}
 }

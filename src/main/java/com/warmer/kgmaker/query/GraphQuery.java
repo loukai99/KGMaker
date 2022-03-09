@@ -9,6 +9,7 @@ public class GraphQuery{
 	private int matchtype ;
     private int pageSize = 10;
     private int pageIndex = 1;
+	private String fileID;
 	/**
 	 * @return the pageSize
 	 */
@@ -94,5 +95,11 @@ public class GraphQuery{
 		this.domainid = domainid;
 	}
 	
-
+	public String getFileID() {
+		return fileID;
+	}
+	
+	public void setFileID(String fileID) {
+		this.fileID = fileID;
+	}
 }

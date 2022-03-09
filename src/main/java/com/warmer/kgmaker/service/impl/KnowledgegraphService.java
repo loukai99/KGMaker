@@ -16,14 +16,14 @@ public class KnowledgegraphService implements IKnowledgegraphService {
 	private IKnowledgegraphRepository knowledgegraphRepository;
 	
 	@Override
-	public List<Map<String, Object>> getDomainList(String domainname,String createuser) {
-		List<Map<String,Object>> list = knowledgegraphRepository.getDomainList(domainname,createuser);		
+	public List<Map<String, Object>> getDomainList(String domainname,String createuser,String fileID) {
+		List<Map<String,Object>> list = knowledgegraphRepository.getDomainList(domainname,createuser,fileID);
 		return list;
 	}
 
 	@Override
 	public void saveDomain(Map<String, Object> map) {
-		knowledgegraphRepository.saveDomain(map);		
+		knowledgegraphRepository.saveDomain(map);
 	}
 
 	@Override

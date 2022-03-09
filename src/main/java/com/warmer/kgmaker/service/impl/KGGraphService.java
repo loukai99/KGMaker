@@ -51,7 +51,12 @@ public class KGGraphService implements IKGGraphService {
     public void createdomain(String domain) {
         kgRepository.createdomain(domain);
     }
-
+    
+    @Override
+    public void createdomain(String domain, String fileID) {
+        kgRepository.createdomain(domain,fileID);
+    }
+    
     @Override
     public HashMap<String, Object> getmorerelationnode(String domain, String nodeid) {
         return kgRepository.getmorerelationnode(domain, nodeid);
