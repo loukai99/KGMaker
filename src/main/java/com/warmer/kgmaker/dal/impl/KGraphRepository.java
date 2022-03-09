@@ -260,8 +260,6 @@ public class KGraphRepository implements IKGraphRepository {
                         entity.getUuid(), sqlkeyval);
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             } else {
-                // todo 颜色
-                entity.setColor("#ff4500");// 默认颜色
                 entity.setR(30);// 默认半径
                 String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity));
                 String cypherSql = String.format("create (n:`%s` %s) return n", domain, propertiesString);

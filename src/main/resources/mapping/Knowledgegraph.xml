@@ -15,7 +15,7 @@
                 and name like '%${domainname}%'
             </if>
             <if test="fileID!='' and fileID!=null">
-                and fileID = '${fileID}%'
+                and file_id = '${fileID}'
             </if>
         </where>
         order by id
