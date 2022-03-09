@@ -37,7 +37,6 @@ public class KGManagerController extends BaseController {
     @Autowired
     private Driver neo4jDriver;
     
-
     
     @ResponseBody
     @PostMapping("/saveProperties")
@@ -92,7 +91,7 @@ public class KGManagerController extends BaseController {
         try {
             String name = "tc";
             PageHelper.startPage(queryItem.getPageIndex(), queryItem.getPageSize(), true);
-            List<Map<String, Object>> domainList = kgservice.getDomainList(queryItem.getDomain(), name,queryItem.getFileID());
+            List<Map<String, Object>> domainList = kgservice.getDomainList(queryItem.getDomain(), name, queryItem.getFileID());
             PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(domainList);
             long total = pageInfo.getTotal();
             resultRecord.setPageIndex(queryItem.getPageIndex());
@@ -175,7 +174,7 @@ public class KGManagerController extends BaseController {
         R<String> result = new R<String>();
         try {
             if (!StringUtil.isBlank(domain)) {
-                List<Map<String, Object>> domainItem = kgservice.getDomainByName(domain);
+                List<Map<String, Object>> domainItem = kgservice.getDomainByName(domain, fileID);
                 if (domainItem.size() > 0) {
                     result.code = 300;
                     result.setMsg("领域已存在");
@@ -191,6 +190,18 @@ public class KGManagerController extends BaseController {
                     kgservice.saveDomain(maps);// 保存到mysql
                     KGGraphService.createdomain(domain, fileID);// 保存到图数据
                     result.code = 200;
+                }
+                List<Map<String, Object>> ALLItem = kgservice.getDomainByName("ALL", fileID);
+                if (ALLItem.size() <= 0) {
+                    String name = "tc";
+                    Map<String, Object> maps = new HashMap<String, Object>();
+                    maps.put("name", "ALL");
+                    maps.put("nodecount", 1);
+                    maps.put("shipcount", 0);
+                    maps.put("status", 1);
+                    maps.put("createuser", name);
+                    maps.put("file_id", fileID);
+                    kgservice.saveDomain(maps);// 保存到mysql
                 }
             }
         } catch (Exception e) {
@@ -268,7 +279,7 @@ public class KGManagerController extends BaseController {
         try {
             String domain = request.getParameter("domain");
             if (!StringUtil.isBlank(domain)) {
-                List<Map<String, Object>> domainItem = kgservice.getDomainByName(domain);
+                List<Map<String, Object>> domainItem = kgservice.getDomainByName(domain, entity.getFileID());
                 if (domainItem.size() <= 0) {
                     String name = "tc";
                     Map<String, Object> maps = new HashMap<String, Object>();
@@ -277,7 +288,7 @@ public class KGManagerController extends BaseController {
                     maps.put("shipcount", 0);
                     maps.put("status", 1);
                     maps.put("createuser", name);
-                    maps.put("file_id",entity.getFileID());
+                    maps.put("file_id", entity.getFileID());
                     kgservice.saveDomain(maps);
                 }
                 graphNode = KGGraphService.createnode(domain, entity);
@@ -350,6 +361,7 @@ public class KGManagerController extends BaseController {
     
     /**
      * fileID 不需要传，前端传递的domainId绑定了File
+     *
      * @param domainid
      * @param domain
      * @return

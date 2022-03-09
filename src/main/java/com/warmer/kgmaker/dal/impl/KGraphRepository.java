@@ -76,7 +76,7 @@ public class KGraphRepository implements IKGraphRepository {
                             cqWhere = String.format("where n.name contains('%s')", query.getNodename());
                         }
                     }
-                    String nodeOnly = cqWhere;
+
                     if (!StringUtil.isBlank(cqr)) {
                         if (StringUtil.isBlank(cqWhere)) {
                             cqWhere = String.format(" where ( %s )", cqr);
@@ -87,7 +87,7 @@ public class KGraphRepository implements IKGraphRepository {
                         
                     }
                     if (!StringUtil.isBlank(query.getFileID())) {
-                        String s = String.format("n.fileId = '%s'", query.getFileID());
+                        String s = String.format("n.fileID = %s", query.getFileID());
                         if (StringUtil.isBlank(cqWhere)) {
                             cqWhere = String.format(" where ( %s )", s);
                             
@@ -95,6 +95,7 @@ public class KGraphRepository implements IKGraphRepository {
                             cqWhere += String.format(" and ( %s )", s);
                         }
                     }
+                    String nodeOnly = cqWhere;
                     // 下边的查询查不到单个没有关系的节点,考虑要不要左箭头
                     String nodeSql = String.format("MATCH (n:`%s`) <-[r]->(m) %s return * limit %s", domain, cqWhere,
                             query.getPageSize());
@@ -188,7 +189,7 @@ public class KGraphRepository implements IKGraphRepository {
     public void createdomain(String domain, String fileID) {
         try {
             String cypherSql = String.format(
-                    "create (n:`%s`{entitytype:0,name:'',fileID:'%s'}) return id(n)", domain,fileID);
+                    "create (n:`%s`{entitytype:0,name:'',fileID:%s}) return id(n)", domain,fileID);
             neo4jUtil.excuteCypherSql(cypherSql);
         } catch (Exception e) {
             e.printStackTrace();

@@ -25,6 +25,7 @@
         FROM knowledgegraphdomain
         WHERE status = 1
           and name = #{domainname}
+          and file_id = #{fileID}
     </select>
     <select id="getDomainById" resultType="map" parameterType="Integer">
         SELECT *
