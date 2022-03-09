@@ -1,6 +1,7 @@
 package com.warmer.kgmaker.dal.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import com.warmer.kgmaker.dal.IKGraphRepository;
 import com.warmer.kgmaker.entity.QAEntityItem;
 import com.warmer.kgmaker.query.GraphQuery;
@@ -261,7 +262,9 @@ public class KGraphRepository implements IKGraphRepository {
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             } else {
                 entity.setR(30);// 默认半径
-                String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity));
+                SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
+                filter.getExcludes().add("uuid");
+                String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity,filter));
                 String cypherSql = String.format("create (n:`%s` %s) return n", domain, propertiesString);
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             }

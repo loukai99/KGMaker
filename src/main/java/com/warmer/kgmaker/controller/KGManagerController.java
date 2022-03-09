@@ -304,65 +304,6 @@ public class KGManagerController extends BaseController {
         return result;
     }
     
-    @ResponseBody
-    @RequestMapping(value = "/batchcreatenode")
-    public R<HashMap<String, Object>> batchcreatenode(String domain, String sourcename, String[] targetnames,
-                                                      String relation) {
-        R<HashMap<String, Object>> result = new R<HashMap<String, Object>>();
-        HashMap<String, Object> rss = new HashMap<String, Object>();
-        try {
-            rss = KGGraphService.batchcreatenode(domain, sourcename, relation, targetnames);
-            result.code = 200;
-            result.setData(rss);
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.code = 500;
-            result.setMsg("服务器错误");
-        }
-        
-        return result;
-    }
-    
-    @ResponseBody
-    @RequestMapping(value = "/batchcreatechildnode")
-    public R<HashMap<String, Object>> batchcreatechildnode(String domain, String sourceid, Integer entitytype,
-                                                           String[] targetnames, String relation) {
-        R<HashMap<String, Object>> result = new R<HashMap<String, Object>>();
-        HashMap<String, Object> rss = new HashMap<String, Object>();
-        try {
-            rss = KGGraphService.batchcreatechildnode(domain, sourceid, entitytype, targetnames, relation);
-            result.code = 200;
-            result.setData(rss);
-            return result;
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.code = 500;
-            result.setMsg("服务器错误");
-        }
-        
-        return result;
-    }
-    
-    @ResponseBody
-    @RequestMapping(value = "/batchcreatesamenode")
-    public R<List<HashMap<String, Object>>> batchcreatesamenode(String domain, Integer entitytype,
-                                                                String[] sourcenames) {
-        R<List<HashMap<String, Object>>> result = new R<List<HashMap<String, Object>>>();
-        List<HashMap<String, Object>> rss = new ArrayList<HashMap<String, Object>>();
-        try {
-            rss = KGGraphService.batchcreatesamenode(domain, entitytype, sourcenames);
-            result.code = 200;
-            result.setData(rss);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.code = 500;
-            result.setMsg("服务器错误");
-        }
-        
-        return result;
-    }
     
     @ResponseBody
     @RequestMapping(value = "/createlink")
@@ -415,6 +356,12 @@ public class KGManagerController extends BaseController {
         return result;
     }
     
+    /**
+     * fileID 不需要传，前端传递的domainId绑定了File
+     * @param domainid
+     * @param domain
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/deletedomain")
     public R<List<HashMap<String, Object>>> deletedomain(Integer domainid, String domain) {
