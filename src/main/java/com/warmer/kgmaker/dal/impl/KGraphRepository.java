@@ -113,7 +113,7 @@ public class KGraphRepository implements IKGraphRepository {
                         String nodecql = String.format("MATCH (n:`%s`) %s RETURN distinct(n) limit %s", domain,
                                 nodeOnly, query.getPageSize());
                         if ("ALL".equals(domain)) {
-                            nodeSql = String.format("MATCH (n) %s RETURN distinct(n) limit %s",
+                            nodecql = String.format("MATCH (n) %s RETURN distinct(n) limit %s",
                                     nodeOnly, query.getPageSize());
                         }
                         List<HashMap<String, Object>> nodeItem = neo4jUtil.GetGraphNode(nodecql);
