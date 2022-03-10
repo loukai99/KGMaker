@@ -8,7 +8,14 @@
         where status = 1
     </select>
     <select id="getDomainList" resultType="map">
-        SELECT * FROM knowledgegraphdomain
+        SELECT
+        <if test="fileID!='' and fileID!=null">
+            name
+        </if>
+        <if test="fileID=='' or fileID==null">
+            distinct (name)
+        </if>
+        FROM knowledgegraphdomain
         <where>
             status=1
             <if test="domainname!='' and domainname!=null">
