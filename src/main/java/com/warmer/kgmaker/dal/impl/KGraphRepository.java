@@ -76,7 +76,7 @@ public class KGraphRepository implements IKGraphRepository {
                             cqWhere = String.format("where n.name contains('%s')", query.getNodename());
                         }
                     }
-
+                    
                     if (!StringUtil.isBlank(cqr)) {
                         if (StringUtil.isBlank(cqWhere)) {
                             cqWhere = String.format(" where ( %s )", cqr);
@@ -112,6 +112,10 @@ public class KGraphRepository implements IKGraphRepository {
                     } else {
                         String nodecql = String.format("MATCH (n:`%s`) %s RETURN distinct(n) limit %s", domain,
                                 nodeOnly, query.getPageSize());
+                        if ("ALL".equals(domain)) {
+                            nodecql = String.format("MATCH (n) %s RETURN distinct(n) limit %s",
+                                    nodeOnly, query.getPageSize());
+                        }
                         List<HashMap<String, Object>> nodeItem = neo4jUtil.GetGraphNode(nodecql);
                         nr.put("node", nodeItem);
                         nr.put("relationship", new ArrayList<HashMap<String, Object>>());
@@ -189,7 +193,7 @@ public class KGraphRepository implements IKGraphRepository {
     public void createdomain(String domain, String fileID) {
         try {
             String cypherSql = String.format(
-                    "create (n:`%s`{entitytype:0,name:'',fileID:%s}) return id(n)", domain,fileID);
+                    "create (n:`%s`{entitytype:0,name:'',fileID:%s}) return id(n)", domain, fileID);
             neo4jUtil.excuteCypherSql(cypherSql);
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,7 +269,7 @@ public class KGraphRepository implements IKGraphRepository {
                 entity.setR(30);// 默认半径
                 SimplePropertyPreFilter filter = new SimplePropertyPreFilter();
                 filter.getExcludes().add("uuid");
-                String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity,filter));
+                String propertiesString = neo4jUtil.getFilterPropertiesJson(JSON.toJSONString(entity, filter));
                 String cypherSql = String.format("create (n:`%s` %s) return n", domain, propertiesString);
                 graphNodeList = neo4jUtil.GetGraphNode(cypherSql);
             }
